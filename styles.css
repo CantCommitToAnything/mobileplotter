@@ -288,3 +288,34 @@ textarea {
     border-right: 1px solid var(--border);
   }
 }
+
+.zoom-float {
+  position: fixed;
+  right: 10px;
+  bottom: 82px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255,255,255,.94);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 6px;
+  z-index: 31;
+  box-shadow: 0 4px 12px rgba(0,0,0,.15);
+}
+
+.zoom-float button {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border-radius: 999px;
+  background: #111827;
+  color: white;
+}
+
+#zoomLabel {
+  min-width: 48px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 13px;
+}
