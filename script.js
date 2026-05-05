@@ -56,6 +56,7 @@ const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
 const canvasWrap = document.getElementById("canvasWrap");
+const canvasSpacer = document.getElementById("canvasSpacer");
 const projectName = document.getElementById("projectName");
 const upload = document.getElementById("upload");
 const fileStatus = document.getElementById("fileStatus");
@@ -162,18 +163,22 @@ function bindEvents() {
 }
 
 function zoomIn() {
-  zoom = Math.min(3, zoom + 0.1);
+  zoom = Math.min(5, zoom + 0.25);
   updateZoom();
 }
 
 function zoomOut() {
-  zoom = Math.max(0.3, zoom - 0.1);
+  zoom = Math.max(0.1, zoom - 0.1);
   updateZoom();
 }
 
 function updateZoom() {
   canvasWrap.style.transform = `scale(${zoom})`;
   canvasWrap.style.transformOrigin = "top left";
+
+  canvasSpacer.style.width = `${canvas.width * zoom}px`;
+  canvasSpacer.style.height = `${canvas.height * zoom}px`;
+
   zoomLabel.textContent = `${Math.round(zoom * 100)}%`;
 }
 
