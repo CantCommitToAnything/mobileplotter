@@ -77,6 +77,10 @@ const fovType = document.getElementById("fovType");
 const fovRotation = document.getElementById("fovRotation");
 const fovSize = document.getElementById("fovSize");
 
+const zoomLabel = document.getElementById("zoomLabel");
+const zoomInBtn = document.getElementById("zoomInBtn");
+const zoomOutBtn = document.getElementById("zoomOutBtn");
+
 let documents = [];
 let currentDocIndex = 0;
 let currentPageIndex = 0;
@@ -94,6 +98,7 @@ function init() {
   bindEvents();
   drawEmpty();
   setMode("device");
+  updateZoom();
 }
 
 function bindEvents() {
@@ -135,6 +140,9 @@ function bindEvents() {
   document.getElementById("saveJsonBtn").addEventListener("click", saveJson);
   document.getElementById("loadJsonInput").addEventListener("change", loadJson);
 
+  zoomInBtn.addEventListener("click", zoomIn);
+  zoomOutBtn.addEventListener("click", zoomOut);
+
   canvas.addEventListener("mousedown", onPointerDown);
   canvas.addEventListener("mousemove", onPointerMove);
   canvas.addEventListener("mouseup", onPointerUp);
@@ -144,13 +152,31 @@ function bindEvents() {
   canvas.addEventListener("touchmove", onTouchMove, { passive: false });
   canvas.addEventListener("touchend", onPointerUp);
 
- canvas.addEventListener("wheel", e => {
-  if (!e.ctrlKey) return;
-  e.preventDefault();
+  canvas.addEventListener("wheel", e => {
+    if (!e.ctrlKey) return;
+    e.preventDefault();
 
-  if (e.deltaY < 0) zoomIn();
-  else zoomOut();
-}, { passive: false });
+    if (e.deltaY < 0) zoomIn();
+    else zoomOut();
+  }, { passive: false });
+}
+
+function zoomIn() {
+  zoom = Math.min(3, zoom + 0.1);
+  updateZoom();
+}
+
+function zoomOut() {
+  zoom = Math.max(0.3, zoom - 0.1);
+  updateZoom();
+}
+
+function updateZoom() {
+  canvasWrap.style.transform = `scale(${zoom})`;
+  canvasWrap.style.transformOrigin = "top left";
+  zoomLabel.textContent = `${Math.round(zoom * 100)}%`;
+}
+
 function populateSystems() {
   systemSelect.innerHTML = "";
   Object.keys(SYSTEMS).forEach(key => {
@@ -212,6 +238,7 @@ async function handleUpload(e) {
   }
 
   hideProgress();
+  resetZoom();
   draw();
 }
 
@@ -354,11 +381,6 @@ function getPoint(e) {
     x: (e.clientX - rect.left) * (canvas.width / rect.width),
     y: (e.clientY - rect.top) * (canvas.height / rect.height)
   };
-}
-
-function getTouchPoint(e) {
-  const touch = e.touches[0];
-  return getPoint(touch);
 }
 
 function onTouchStart(e) {
@@ -880,7 +902,13 @@ async function loadJson(e) {
   currentPageIndex = 0;
   selectedMarkerIndex = null;
   fileStatus.textContent = `Loaded: ${file.name}`;
+  resetZoom();
   draw();
+}
+
+function resetZoom() {
+  zoom = 1;
+  updateZoom();
 }
 
 function safeName(text) {
@@ -919,18 +947,4 @@ function roundRect(context, x, y, width, height, radius) {
   context.closePath();
 }
 
-  function zoomIn() {
-  zoom = Math.min(3, zoom + 0.1);
-  updateZoom();
-}
-
-function zoomOut() {
-  zoom = Math.max(0.3, zoom - 0.1);
-  updateZoom();
-}
-
-function updateZoom() {
-  canvasWrap.style.transform = `scale(${zoom})`;
-  document.getElementById("zoomLabel").textContent = `${Math.round(zoom * 100)}%`;
-}
 init();
