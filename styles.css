@@ -156,6 +156,7 @@ button,
   color: var(--muted);
 }
 
+/* Drawing workspace only scrolls. Toolbar stays fixed. */
 #workspace {
   height: calc(100vh - 64px - 58px - 92px);
   overflow: auto;
@@ -174,6 +175,7 @@ canvas {
   background: white;
 }
 
+/* Fixed bottom toolbar */
 .bottom-bar {
   position: fixed;
   left: 0;
@@ -203,6 +205,38 @@ canvas {
   color: var(--danger);
 }
 
+/* Floating zoom controls */
+.zoom-float {
+  position: fixed;
+  right: 10px;
+  bottom: 82px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255,255,255,.94);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 6px;
+  z-index: 31;
+  box-shadow: 0 4px 12px rgba(0,0,0,.15);
+}
+
+.zoom-float button {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border-radius: 999px;
+  background: #111827;
+  color: white;
+}
+
+#zoomLabel {
+  min-width: 48px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 13px;
+}
+
 .panel {
   position: fixed;
   left: 0;
@@ -214,7 +248,7 @@ canvas {
   box-shadow: 0 -8px 28px rgba(0, 0, 0, .22);
   padding: 14px;
   transition: bottom .22s ease;
-  z-index: 10;
+  z-index: 40;
   overflow: auto;
 }
 
@@ -287,35 +321,20 @@ textarea {
     border-left: 1px solid var(--border);
     border-right: 1px solid var(--border);
   }
-}
 
-.zoom-float {
-  position: fixed;
-  right: 10px;
-  bottom: 82px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  background: rgba(255,255,255,.94);
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  padding: 6px;
-  z-index: 31;
-  box-shadow: 0 4px 12px rgba(0,0,0,.15);
-}
+  .bottom-bar {
+    max-width: 540px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
 
-.zoom-float button {
-  width: 36px;
-  height: 36px;
-  padding: 0;
-  border-radius: 999px;
-  background: #111827;
-  color: white;
-}
+  .zoom-float {
+    right: calc((100vw - 540px) / 2 + 10px);
+  }
 
-#zoomLabel {
-  min-width: 48px;
-  text-align: center;
-  font-weight: 700;
-  font-size: 13px;
+  .panel {
+    max-width: 540px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
 }
