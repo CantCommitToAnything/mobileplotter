@@ -157,10 +157,11 @@ button,
 }
 
 #workspace {
-  height: calc(100vh - 64px - 58px - 92px - 72px);
+  height: calc(100vh - 64px - 58px - 92px);
   overflow: auto;
   background: var(--bg);
   touch-action: pan-x pan-y;
+  padding-bottom: 84px;
 }
 
 #canvasWrap {
@@ -174,6 +175,10 @@ canvas {
 }
 
 .bottom-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
   height: 72px;
   background: white;
   border-top: 1px solid var(--border);
@@ -181,6 +186,7 @@ canvas {
   display: flex;
   gap: 8px;
   overflow-x: auto;
+  z-index: 30;
 }
 
 .bottom-bar button {
