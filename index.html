@@ -14,6 +14,7 @@
 
 <body>
 
+<!-- HEADER -->
 <header class="app-header">
   <div>
     <h1>Plotter Tool</h1>
@@ -22,6 +23,7 @@
   <button id="openPanelBtn">Details</button>
 </header>
 
+<!-- PROJECT / UPLOAD -->
 <section class="project-bar">
   <input id="projectName" type="text" placeholder="Project name" />
   <label class="upload-btn">
@@ -30,6 +32,7 @@
   </label>
 </section>
 
+<!-- PROGRESS -->
 <section id="progressWrap">
   <div id="progressOuter">
     <div id="progressBar"></div>
@@ -37,6 +40,7 @@
   <div id="progressText">Loading...</div>
 </section>
 
+<!-- DROPDOWNS + PAGE NAV -->
 <section class="controls-bar">
   <div class="select-row">
     <select id="systemSelect"></select>
@@ -50,16 +54,21 @@
   </div>
 </section>
 
+<!-- DRAWING AREA -->
 <main id="workspace">
   <div id="canvasWrap">
     <canvas id="canvas"></canvas>
   </div>
 </main>
+
+<!-- FLOATING ZOOM (NEW) -->
 <div class="zoom-float">
   <button id="zoomOutBtn">−</button>
   <span id="zoomLabel">100%</span>
   <button id="zoomInBtn">+</button>
 </div>
+
+<!-- BOTTOM TOOLBAR (NOW FIXED VIA CSS) -->
 <nav class="bottom-bar">
   <button id="deviceModeBtn" class="active">Device</button>
   <button id="noteModeBtn">Note</button>
@@ -68,23 +77,27 @@
   <button id="deleteBtn">Delete</button>
 </nav>
 
+<!-- SLIDE PANEL -->
 <aside id="panel" class="panel">
   <div class="panel-header">
     <strong>Details / Export</strong>
     <button id="closePanelBtn">×</button>
   </div>
 
+  <!-- SELECTED ITEM -->
   <div class="panel-block">
     <h3>Selected Item</h3>
     <div id="selectedInfo">No item selected.</div>
     <textarea id="markerNote" placeholder="Selected item note..." disabled></textarea>
   </div>
 
+  <!-- PAGE NOTES -->
   <div class="panel-block">
     <h3>Page Notes</h3>
     <textarea id="pageNotes" placeholder="General page notes..."></textarea>
   </div>
 
+  <!-- FOV CONTROLS -->
   <div class="panel-block">
     <h3>FOV</h3>
     <select id="fovType">
@@ -99,16 +112,19 @@
     <input id="fovSize" type="range" min="20" max="200" value="70" />
   </div>
 
+  <!-- COUNTS -->
   <div class="panel-block">
     <h3>Counts</h3>
     <div id="counts">No devices plotted yet.</div>
   </div>
 
+  <!-- EXPORT -->
   <div class="panel-block">
     <h3>Save / Export</h3>
     <button id="exportPdfBtn">Export PDF</button>
     <button id="exportPngBtn">Export PNG</button>
     <button id="saveJsonBtn">Save Editable JSON</button>
+
     <label class="load-json">
       Load JSON
       <input id="loadJsonInput" type="file" accept=".json" hidden />
