@@ -1,0 +1,284 @@
+:root {
+  --dark: #111827;
+  --primary: #2563eb;
+  --danger: #dc2626;
+  --border: #d1d5db;
+  --muted: #6b7280;
+  --bg: #e5e7eb;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  font-family: Arial, sans-serif;
+  color: #111827;
+  background: var(--bg);
+  overflow: hidden;
+}
+
+button,
+select,
+input,
+textarea {
+  font: inherit;
+}
+
+button,
+.upload-btn,
+.load-json {
+  border: 0;
+  border-radius: 10px;
+  padding: 10px 12px;
+  background: #f3f4f6;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: center;
+}
+
+.app-header {
+  height: 64px;
+  background: var(--dark);
+  color: white;
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.app-header h1 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.app-header p {
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: #cbd5e1;
+  max-width: 230px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.app-header button {
+  background: var(--primary);
+  color: white;
+}
+
+.project-bar {
+  height: 58px;
+  padding: 8px;
+  display: flex;
+  gap: 8px;
+  background: white;
+  border-bottom: 1px solid var(--border);
+}
+
+.project-bar input {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px;
+  font-size: 16px;
+}
+
+.upload-btn {
+  background: var(--primary);
+  color: white;
+  min-width: 92px;
+}
+
+#progressWrap {
+  display: none;
+  padding: 6px 8px;
+  background: white;
+  border-bottom: 1px solid var(--border);
+}
+
+#progressOuter {
+  height: 10px;
+  background: #d1d5db;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+#progressBar {
+  height: 100%;
+  width: 0%;
+  background: var(--primary);
+}
+
+#progressText {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 3px;
+}
+
+.controls-bar {
+  height: 92px;
+  background: white;
+  border-bottom: 1px solid var(--border);
+  padding: 8px;
+  display: grid;
+  gap: 8px;
+}
+
+.select-row,
+.page-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.select-row select {
+  flex: 1;
+  min-width: 0;
+  padding: 9px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: white;
+}
+
+.page-row button {
+  min-width: 72px;
+}
+
+#pageInfo {
+  flex: 1;
+  text-align: center;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+#workspace {
+  height: calc(100vh - 64px - 58px - 92px - 72px);
+  overflow: auto;
+  background: var(--bg);
+  touch-action: pan-x pan-y;
+}
+
+#canvasWrap {
+  width: max-content;
+  transform-origin: top left;
+}
+
+canvas {
+  display: block;
+  background: white;
+}
+
+.bottom-bar {
+  height: 72px;
+  background: white;
+  border-top: 1px solid var(--border);
+  padding: 8px;
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+}
+
+.bottom-bar button {
+  min-width: 76px;
+  flex: 0 0 auto;
+}
+
+.bottom-bar button.active {
+  background: var(--primary);
+  color: white;
+}
+
+#deleteBtn {
+  color: var(--danger);
+}
+
+.panel {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: -82vh;
+  height: 82vh;
+  background: white;
+  border-radius: 18px 18px 0 0;
+  box-shadow: 0 -8px 28px rgba(0, 0, 0, .22);
+  padding: 14px;
+  transition: bottom .22s ease;
+  z-index: 10;
+  overflow: auto;
+}
+
+.panel.open {
+  bottom: 0;
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.panel-block {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.panel-block h3 {
+  margin: 0 0 8px;
+  font-size: 14px;
+}
+
+textarea {
+  width: 100%;
+  min-height: 92px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px;
+  margin-top: 8px;
+  font-size: 16px;
+}
+
+.panel select,
+.panel input[type="range"] {
+  width: 100%;
+  margin: 6px 0 10px;
+}
+
+.panel label {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+#counts,
+#selectedInfo {
+  font-size: 14px;
+  line-height: 1.5;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.panel-block button,
+.load-json {
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+  background: var(--dark);
+  color: white;
+}
+
+@media (min-width: 900px) {
+  body {
+    max-width: 540px;
+    margin: 0 auto;
+    border-left: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+  }
+}

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mobile Plotter Tool</title>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <link rel="stylesheet" href="styles.css" />
+  <script src="script.js" defer></script>
+</head>
+
+<body>
+
+<header class="app-header">
+  <div>
+    <h1>Plotter Tool</h1>
+    <p id="fileStatus">No file uploaded</p>
+  </div>
+  <button id="openPanelBtn">Details</button>
+</header>
+
+<section class="project-bar">
+  <input id="projectName" type="text" placeholder="Project name" />
+  <label class="upload-btn">
+    Upload
+    <input id="upload" type="file" accept="image/*,.pdf" hidden />
+  </label>
+</section>
+
+<section id="progressWrap">
+  <div id="progressOuter">
+    <div id="progressBar"></div>
+  </div>
+  <div id="progressText">Loading...</div>
+</section>
+
+<section class="controls-bar">
+  <div class="select-row">
+    <select id="systemSelect"></select>
+    <select id="deviceSelect"></select>
+  </div>
+
+  <div class="page-row">
+    <button id="prevPageBtn">Prev</button>
+    <span id="pageInfo">Page 0 of 0</span>
+    <button id="nextPageBtn">Next</button>
+  </div>
+</section>
+
+<main id="workspace">
+  <div id="canvasWrap">
+    <canvas id="canvas"></canvas>
+  </div>
+</main>
+
+<nav class="bottom-bar">
+  <button id="deviceModeBtn" class="active">Device</button>
+  <button id="noteModeBtn">Note</button>
+  <button id="fovModeBtn">FOV</button>
+  <button id="undoBtn">Undo</button>
+  <button id="deleteBtn">Delete</button>
+</nav>
+
+<aside id="panel" class="panel">
+  <div class="panel-header">
+    <strong>Details / Export</strong>
+    <button id="closePanelBtn">×</button>
+  </div>
+
+  <div class="panel-block">
+    <h3>Selected Item</h3>
+    <div id="selectedInfo">No item selected.</div>
+    <textarea id="markerNote" placeholder="Selected item note..." disabled></textarea>
+  </div>
+
+  <div class="panel-block">
+    <h3>Page Notes</h3>
+    <textarea id="pageNotes" placeholder="General page notes..."></textarea>
+  </div>
+
+  <div class="panel-block">
+    <h3>FOV</h3>
+    <select id="fovType">
+      <option value="directional">Directional</option>
+      <option value="circle">360 Circle</option>
+    </select>
+
+    <label>Rotation</label>
+    <input id="fovRotation" type="range" min="0" max="359" value="0" />
+
+    <label>Size</label>
+    <input id="fovSize" type="range" min="20" max="200" value="70" />
+  </div>
+
+  <div class="panel-block">
+    <h3>Counts</h3>
+    <div id="counts">No devices plotted yet.</div>
+  </div>
+
+  <div class="panel-block">
+    <h3>Save / Export</h3>
+    <button id="exportPdfBtn">Export PDF</button>
+    <button id="exportPngBtn">Export PNG</button>
+    <button id="saveJsonBtn">Save Editable JSON</button>
+    <label class="load-json">
+      Load JSON
+      <input id="loadJsonInput" type="file" accept=".json" hidden />
+    </label>
+  </div>
+</aside>
+
+</body>
+</html>
