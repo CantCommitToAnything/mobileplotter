@@ -85,6 +85,7 @@ let currentDevice = "singleDrop";
 let mode = "device";
 let selectedMarkerIndex = null;
 let draggingMarkerIndex = null;
+let zoom = 1;
 let iconCache = new Map();
 
 function init() {
@@ -143,14 +144,13 @@ function bindEvents() {
   canvas.addEventListener("touchmove", onTouchMove, { passive: false });
   canvas.addEventListener("touchend", onPointerUp);
 
-  canvas.addEventListener("wheel", e => {
-    if (!e.ctrlKey) return;
-    e.preventDefault();
-    const scale = e.deltaY < 0 ? 1.1 : 0.9;
-    canvasWrap.style.transform = `scale(${scale})`;
-  }, { passive: false });
-}
+ canvas.addEventListener("wheel", e => {
+  if (!e.ctrlKey) return;
+  e.preventDefault();
 
+  if (e.deltaY < 0) zoomIn();
+  else zoomOut();
+}, { passive: false });
 function populateSystems() {
   systemSelect.innerHTML = "";
   Object.keys(SYSTEMS).forEach(key => {
@@ -919,4 +919,18 @@ function roundRect(context, x, y, width, height, radius) {
   context.closePath();
 }
 
+  function zoomIn() {
+  zoom = Math.min(3, zoom + 0.1);
+  updateZoom();
+}
+
+function zoomOut() {
+  zoom = Math.max(0.3, zoom - 0.1);
+  updateZoom();
+}
+
+function updateZoom() {
+  canvasWrap.style.transform = `scale(${zoom})`;
+  document.getElementById("zoomLabel").textContent = `${Math.round(zoom * 100)}%`;
+}
 init();
