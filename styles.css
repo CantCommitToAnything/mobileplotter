@@ -176,7 +176,7 @@ canvas {
   box-shadow: var(--shadow);
   border-radius: 4px;
   cursor: crosshair;
-  touch-action: pinch-zoom;
+  touch-action: manipulation;
 }
 
 /* =====================================================
