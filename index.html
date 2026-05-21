@@ -2,137 +2,204 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mobile Plotter Tool</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 
+  <title>CAD-lidette</title>
+
+  <!-- External libraries -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
   <link rel="stylesheet" href="styles.css" />
-  <script src="script.js" defer></script>
 </head>
 
 <body>
+  <div id="app">
 
-<!-- HEADER -->
-<header class="app-header">
-  <div>
-    <h1>Plotter Tool</h1>
-    <p id="fileStatus">No file uploaded</p>
-  </div>
-  <button id="openPanelBtn">Details</button>
-</header>
+    <!-- App header -->
+    <header id="appHeader">
+      <h1>CAD-lidette</h1>
+      <p>Mobile plan plotting for PDFs, images, and site photos.</p>
+    </header>
 
-<!-- PROJECT / UPLOAD -->
-<section class="project-bar">
-  <input id="projectName" type="text" placeholder="Project name" />
-  <label class="upload-btn">
-    Upload
-    <input id="upload" type="file" accept="image/*,.pdf" hidden />
-  </label>
-</section>
+    <!-- Upload + project info -->
+    <section id="topbar">
+      <div class="field upload-field">
+        <label for="upload">Upload Drawing / Photo</label>
+        <input id="upload" type="file" accept="image/*,.pdf,application/pdf,.heic,.heif" multiple />
+        <div id="uploadedFileName" class="file-status">No file uploaded</div>
+      </div>
 
-<!-- PROGRESS -->
-<section id="progressWrap">
-  <div id="progressOuter">
-    <div id="progressBar"></div>
-  </div>
-  <div id="progressText">Loading...</div>
-</section>
+      <div class="field project-field">
+        <label for="projectName">Project Name*</label>
+        <input id="projectName" type="text" placeholder="Project name" />
+        <div id="projectNameError" class="field-error"></div>
+      </div>
+    </section>
 
-<!-- DROPDOWNS + PAGE NAV -->
-<section class="controls-bar">
-  <div class="select-row">
-    <select id="systemSelect"></select>
-    <select id="deviceSelect"></select>
-  </div>
+    <!-- Drawing workspace -->
+    <main id="workspace">
+      <div id="progressWrap" class="canvas-loading hidden">
+        <div class="loading-card">
+          <div id="progressText">Loading...</div>
+          <div class="progress-track">
+            <div id="progressBar"></div>
+          </div>
+        </div>
+      </div>
 
-  <div class="page-row">
-    <button id="prevPageBtn">Prev</button>
-    <span id="pageInfo">Page 0 of 0</span>
-    <button id="nextPageBtn">Next</button>
-  </div>
-</section>
+      <section id="drawingArea">
+        <div id="drawingScroll">
+          <div id="drawingViewport">
+            <div id="canvasWrap">
+              <canvas id="canvas" width="800" height="500"></canvas>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
 
-<!-- DRAWING AREA -->
-<main id="workspace">
-  <div id="canvasSpacer">
-    <div id="canvasWrap">
-      <canvas id="canvas"></canvas>
+    <!-- Mobile bottom navigation -->
+    <nav id="mobileToolbar">
+      <button id="mobileDeviceBtn" type="button">Devices</button>
+      <button id="mobileNotesBtn" type="button">Toolbox</button>
+    </nav>
+
+    <!-- Toolbox panel -->
+    <aside id="sidePanel">
+      <div class="side-panel-header">
+        <h2>Toolbox</h2>
+        <button id="closeNotesBtn" type="button">×</button>
+      </div>
+
+      <div class="panel">
+        <div class="section-title">Project</div>
+
+        <div class="summary-grid">
+          <span>Name</span>
+          <strong id="panelProjectName">Current Project</strong>
+
+          <span>Drawing</span>
+          <strong id="panelDrawingName">No drawing loaded</strong>
+
+          <span>Pages</span>
+          <strong id="panelPageInfo">0</strong>
+        </div>
+
+        <div class="button-row mt">
+          <button id="mobilePrevPageBtn" type="button">Prev Page</button>
+          <button id="mobileNextPageBtn" type="button">Next Page</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="section-title">Counts</div>
+        <div id="counts">No items plotted yet.</div>
+      </div>
+
+      <div class="panel">
+        <div class="section-title">Notes</div>
+        <textarea id="notes" placeholder="Page notes..."></textarea>
+        <button id="savePageNotesBtn" type="button" class="save mt">
+  Add Page Note
+</button>
+        <div id="noteList" class="note-list">No notes placed yet.</div>
+      </div>
+
+      <div class="panel">
+        <div class="section-title">Actions</div>
+
+        <div class="button-row">
+          <button id="undoBtn" type="button">Undo</button>
+          <button id="clearBtn" type="button" class="danger">Clear</button>
+        </div>
+
+        <div class="button-row mt">
+          <button id="saveJsonBtn" type="button">Download JSON</button>
+          <button id="exportAllPdfBtn" type="button" class="primary">Download PDF</button>
+        </div>
+
+        <div class="button-row mt">
+          <button id="loadJsonBtn" type="button">Load JSON</button>
+          <input id="loadProjectInput" type="file" accept=".json,application/json" class="hidden" />
+        </div>
+
+        <div id="saveStatus" class="save-status">Saved</div>
+      </div>
+    </aside>
+
+    <!-- Device picker modal -->
+    <div id="devicePickerBackdrop" class="modal-backdrop hidden">
+      <div class="modal-card" role="dialog" aria-modal="true">
+        <div class="modal-header">
+          <h2>Devices</h2>
+          <button id="closeDevicePickerBtn" type="button" class="modal-close">X</button>
+        </div>
+
+        <div class="modal-body">
+          <input id="devicePickerSearch" type="text" placeholder="Search devices..." />
+
+          <div class="device-picker-grid">
+            <button type="button" class="quick-device" data-system="networking" data-item="singleDrop">Single Drop</button>
+            <button type="button" class="quick-device" data-system="networking" data-item="dualDrop">Dual Drop</button>
+            <button type="button" class="quick-device" data-system="networking" data-item="quadDrop">Quad Drop</button>
+            <button type="button" class="quick-device" data-system="networking" data-item="ceilingDrop">Ceiling Drop</button>
+            <button type="button" class="quick-device" data-system="networking" data-item="floorBox">Floor Box</button>
+            <button type="button" class="quick-device" data-system="networking" data-item="fiberDrop">Fiber Drop</button>
+            <button type="button" class="quick-device" data-system="networking" data-item="wap">WAP</button>
+
+            <button type="button" class="quick-device" data-system="cctv" data-item="camera">Camera</button>
+            <button type="button" class="quick-device" data-system="cctv" data-item="domeCamera">Dome Camera</button>
+            <button type="button" class="quick-device" data-system="cctv" data-item="bulletCamera">Bullet Camera</button>
+            <button type="button" class="quick-device" data-system="cctv" data-item="ptzCamera">PTZ Camera</button>
+            <button type="button" class="quick-device" data-system="cctv" data-item="camera360">360 Camera</button>
+
+            <button type="button" class="quick-device" data-system="accessControl" data-item="cardReader">Card Reader</button>
+            <button type="button" class="quick-device" data-system="accessControl" data-item="doorContact">Door Contact</button>
+            <button type="button" class="quick-device" data-system="accessControl" data-item="rex">REX</button>
+            <button type="button" class="quick-device" data-system="accessControl" data-item="electricStrike">Electric Strike</button>
+            <button type="button" class="quick-device" data-system="accessControl" data-item="magLock">Mag Lock</button>
+
+            <button type="button" class="quick-device" data-system="av" data-item="ceilingSpeaker">Ceiling Speaker</button>
+            <button type="button" class="quick-device" data-system="av" data-item="wallSpeaker">Wall Speaker</button>
+
+            <button type="button" class="quick-device" data-system="infrastructure" data-item="mdf">MDF</button>
+            <button type="button" class="quick-device" data-system="infrastructure" data-item="idf">IDF</button>
+
+            <button type="button" class="quick-device" data-system="endpoints" data-item="panicButton">Panic Button</button>
+            <button type="button" class="quick-device" data-system="endpoints" data-item="vapeDetector">Vape Detector</button>
+            <button type="button" class="quick-device" data-system="endpoints" data-item="intercom">Intercom</button>
+            <button type="button" class="quick-device" data-system="endpoints" data-item="videoIntercomDoor">Video Intercom Door</button>
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
-</main>
 
-<!-- FLOATING ZOOM (NEW) -->
-<div class="zoom-float">
-  <button id="zoomOutBtn">−</button>
-  <span id="zoomLabel">100%</span>
-  <button id="zoomInBtn">+</button>
-</div>
+    <!-- Marker edit panel -->
+    <div id="markerInspector" class="marker-inspector hidden">
+      <div class="inspector-header">
+        <strong id="inspectorTitle">Selected Item</strong>
+        <button id="closeInspectorBtn" type="button">X</button>
+      </div>
 
-<!-- BOTTOM TOOLBAR (NOW FIXED VIA CSS) -->
-<nav class="bottom-bar">
-  <button id="deviceModeBtn" class="active">Device</button>
-  <button id="noteModeBtn">Note</button>
-  <button id="fovModeBtn">FOV</button>
-  <button id="undoBtn">Undo</button>
-  <button id="deleteBtn">Delete</button>
-</nav>
+      <div class="inspector-body">
+        <label for="inspectorLabel">Name</label>
+        <input id="inspectorLabel" type="text" placeholder="Device name" />
 
-<!-- SLIDE PANEL -->
-<aside id="panel" class="panel">
-  <div class="panel-header">
-    <strong>Details / Export</strong>
-    <button id="closePanelBtn">×</button>
-  </div>
+        <label for="inspectorNote">Note</label>
+        <textarea id="inspectorNote" placeholder="Add note..."></textarea>
 
-  <!-- SELECTED ITEM -->
-  <div class="panel-block">
-    <h3>Selected Item</h3>
-    <div id="selectedInfo">No item selected.</div>
-    <textarea id="markerNote" placeholder="Selected item note..." disabled></textarea>
-  </div>
+        <textarea id="selectedMarkerNote" class="hidden"></textarea>
+        <div id="selectedInfo" class="hidden"></div>
+        <div id="inspectorSaveStatus" class="inspector-save-status">Saved</div>
+      </div>
 
-  <!-- PAGE NOTES -->
-  <div class="panel-block">
-    <h3>Page Notes</h3>
-    <textarea id="pageNotes" placeholder="General page notes..."></textarea>
-  </div>
+      <div class="inspector-actions">
+        <button id="deleteInspectorBtn" type="button" class="danger">Delete</button>
+        <button id="saveInspectorBtn" type="button" class="save">Save</button>
+      </div>
+    </div>
 
-  <!-- FOV CONTROLS -->
-  <div class="panel-block">
-    <h3>FOV</h3>
-    <select id="fovType">
-      <option value="directional">Directional</option>
-      <option value="circle">360 Circle</option>
-    </select>
-
-    <label>Rotation</label>
-    <input id="fovRotation" type="range" min="0" max="359" value="0" />
-
-    <label>Size</label>
-    <input id="fovSize" type="range" min="20" max="200" value="70" />
-  </div>
-
-  <!-- COUNTS -->
-  <div class="panel-block">
-    <h3>Counts</h3>
-    <div id="counts">No devices plotted yet.</div>
-  </div>
-
-  <!-- EXPORT -->
-  <div class="panel-block">
-    <h3>Save / Export</h3>
-    <button id="exportPdfBtn">Export PDF</button>
-    <button id="exportPngBtn">Export PNG</button>
-    <button id="saveJsonBtn">Save Editable JSON</button>
-
-    <label class="load-json">
-      Load JSON
-      <input id="loadJsonInput" type="file" accept=".json" hidden />
-    </label>
-  </div>
-</aside>
-
+    <script src="app.js"></script>
 </body>
 </html>
