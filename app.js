@@ -1218,12 +1218,20 @@ function drawMobileMarker(marker) {
 }
 
 function applyMobileZoom() {
-  const page = getCurrentPage();
+  const drawingScroll = document.getElementById("drawingScroll");
 
-  if (!page?.image || !canvas) return;
+  if (!drawingScroll || !canvas || !canvas.width || !canvas.height) return;
 
   canvas.style.width = `${canvas.width * mobileScale}px`;
   canvas.style.height = `${canvas.height * mobileScale}px`;
+
+  requestAnimationFrame(() => {
+    drawingScroll.scrollLeft =
+      (canvas.offsetWidth - drawingScroll.clientWidth) / 2;
+
+    drawingScroll.scrollTop =
+      (canvas.offsetHeight - drawingScroll.clientHeight) / 2;
+  });
 
   setStatus(`Zoom: ${Math.round(mobileScale * 100)}%`);
 }
