@@ -385,7 +385,41 @@ function bindEvents() {
       }
     });
   }
+if (mobileZoomOutBtn) {
+  mobileZoomOutBtn.addEventListener("click", () => {
+    zoomAtCenter(-0.25);
+  });
+}
+canvas.addEventListener("pointerdown", event => {
+  if (mode === "device") return;
 
+  isDraggingView = true;
+  lastPanX = event.clientX;
+  lastPanY = event.clientY;
+  canvas.setPointerCapture(event.pointerId);
+});
+
+canvas.addEventListener("pointermove", event => {
+  if (!isDraggingView) return;
+
+  viewOffsetX += event.clientX - lastPanX;
+  viewOffsetY += event.clientY - lastPanY;
+
+  lastPanX = event.clientX;
+  lastPanY = event.clientY;
+
+  redrawCurrentPage();
+});
+
+canvas.addEventListener("pointerup", event => {
+  isDraggingView = false;
+  canvas.releasePointerCapture(event.pointerId);
+});
+if (mobileZoomInBtn) {
+  mobileZoomInBtn.addEventListener("click", () => {
+    zoomAtCenter(0.25);
+  });
+}
   document.querySelectorAll(".quick-device").forEach(button => {
     button.addEventListener("click", () => {
       selectQuickDevice(button.dataset.system, button.dataset.item);
@@ -950,12 +984,29 @@ function handleCanvasClick(event) {
 function getCanvasTapPoint(event) {
   const rect = canvas.getBoundingClientRect();
 
+  const screenX = event.clientX - rect.left;
+  const screenY = event.clientY - rect.top;
+
   return {
-    x: (event.clientX - rect.left) * (canvas.width / rect.width),
-    y: (event.clientY - rect.top) * (canvas.height / rect.height)
+    x: (screenX - viewOffsetX) / viewScale,
+    y: (screenY - viewOffsetY) / viewScale
   };
 }
+function zoomAtCenter(delta) {
+  const oldScale = viewScale;
+  const newScale = Math.min(4, Math.max(0.2, viewScale + delta));
 
+  const centerX = canvas.width / 2;
+  const centerY = canvas.height / 2;
+
+  viewOffsetX = centerX - ((centerX - viewOffsetX) / oldScale) * newScale;
+  viewOffsetY = centerY - ((centerY - viewOffsetY) / oldScale) * newScale;
+
+  viewScale = newScale;
+
+  redrawCurrentPage();
+  setStatus(`Zoom: ${Math.round(viewScale * 100)}%`);
+}
 function findMarkerAtPoint(page, x, y) {
   if (!page?.markers) return null;
 
@@ -1184,18 +1235,24 @@ function redrawCurrentPage() {
     return;
   }
 
-  canvas.width = page.renderedWidth || page.image.width;
-  canvas.height = page.renderedHeight || page.image.height;
+  canvas.width = canvas.parentElement.clientWidth;
+  canvas.height = canvas.parentElement.clientHeight;
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.drawImage(page.image, 0, 0, canvas.width, canvas.height);
+
+  ctx.save();
+  ctx.translate(viewOffsetX, viewOffsetY);
+  ctx.scale(viewScale, viewScale);
+
+  ctx.drawImage(page.image, 0, 0);
 
   page.markers.forEach(marker => {
     drawMobileMarker(marker);
   });
 
+  ctx.restore();
+
   updateMobileToolbox();
-  fitCanvasToScreen();
 }
 
 function drawMobileMarker(marker) {
