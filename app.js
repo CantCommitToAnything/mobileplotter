@@ -260,6 +260,8 @@ const appState = {
   lastSavedAt: null
 };
 
+let mobileScale = 1;
+let lastTouchDistance = null;
 let documents = [];
 let currentDocIndex = 0;
 let currentPageIndex = 0;
@@ -458,7 +460,35 @@ if (pageNotesInput) {
   if (savePageNotesBtn) {
   savePageNotesBtn.addEventListener("click", savePageNote);
 }
-  
+  const drawingScroll = document.getElementById("drawingScroll");
+const canvasWrap = document.getElementById("canvasWrap");
+
+if (drawingScroll && canvasWrap) {
+  drawingScroll.addEventListener("touchmove", event => {
+    if (event.touches.length !== 2) return;
+
+    event.preventDefault();
+
+    const dx = event.touches[0].clientX - event.touches[1].clientX;
+    const dy = event.touches[0].clientY - event.touches[1].clientY;
+    const distance = Math.hypot(dx, dy);
+
+    if (lastTouchDistance !== null) {
+      const delta = distance / lastTouchDistance;
+
+      mobileScale = Math.min(4, Math.max(0.5, mobileScale * delta));
+
+      canvasWrap.style.transform = `scale(${mobileScale})`;
+      canvasWrap.style.transformOrigin = "top left";
+    }
+
+    lastTouchDistance = distance;
+  }, { passive: false });
+
+  drawingScroll.addEventListener("touchend", () => {
+    lastTouchDistance = null;
+  });
+}
 }
 
 function updateProjectState() {
