@@ -176,7 +176,7 @@ canvas {
   box-shadow: var(--shadow);
   border-radius: 4px;
   cursor: crosshair;
-  touch-action: none;
+  touch-action: auto;
 }
 
 /* =====================================================
@@ -525,15 +525,7 @@ button:disabled {
   touch-action: pan-x pan-y;
 }
 
-canvas {
-  display: block;
-  max-width: none;
-  background: white;
-  box-shadow: var(--shadow);
-  border-radius: 4px;
-  cursor: crosshair;
-  touch-action: auto;
-}
+
 /* =====================================================
    Marker Inspector
 ===================================================== */
