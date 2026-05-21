@@ -338,6 +338,7 @@ const pageNotesInput = document.getElementById("notes");
 const savePageNotesBtn = document.getElementById("savePageNotesBtn");
 const mobileZoomOutBtn = document.getElementById("mobileZoomOutBtn");
 const mobileZoomInBtn = document.getElementById("mobileZoomInBtn");
+const mobileFitBtn = document.getElementById("mobileFitBtn");
 
 // =====================================================
 // Section 2: Init, Event Binding, Status, Validation
@@ -519,6 +520,10 @@ function updateProjectState() {
     panelProjectName.textContent = projectName || "Current Project";
   }
 
+  if (mobileFitBtn) {
+  mobileFitBtn.addEventListener("click", fitCanvasToScreen);
+}
+  
   if (projectNameError) {
     projectNameError.textContent =
       CONFIG.requireProjectName && !projectName
@@ -1121,6 +1126,27 @@ function getAllMarkers() {
   return markers;
 }
 
+function fitCanvasToScreen() {
+  const drawingScroll = document.getElementById("drawingScroll");
+
+  if (!drawingScroll || !canvas || !canvas.width || !canvas.height) return;
+
+  const availableWidth = drawingScroll.clientWidth - 32;
+  const availableHeight = drawingScroll.clientHeight - 32;
+
+  const scaleX = availableWidth / canvas.width;
+  const scaleY = availableHeight / canvas.height;
+
+  mobileScale = Math.min(scaleX, scaleY, 1);
+
+  applyMobileZoom();
+
+  drawingScroll.scrollLeft = 0;
+  drawingScroll.scrollTop = 0;
+
+  setStatus(`Fit to screen: ${Math.round(mobileScale * 100)}%`);
+}
+
 // =====================================================
 // Section 5: Drawing, Page Navigation, Toolbox Counts/Notes
 // =====================================================
@@ -1164,7 +1190,7 @@ function redrawCurrentPage() {
   });
 
   updateMobileToolbox();
-  applyMobileZoom();
+  fitCanvasToScreen();
 }
 
 function drawMobileMarker(marker) {
