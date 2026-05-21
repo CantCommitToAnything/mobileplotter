@@ -259,7 +259,12 @@ const appState = {
   hasMarkers: false,
   lastSavedAt: null
 };
-
+let viewScale = 1;
+let viewOffsetX = 0;
+let viewOffsetY = 0;
+let isDraggingView = false;
+let lastPanX = 0;
+let lastPanY = 0;
 let mobileScale = 1;
 let lastTouchDistance = null;
 let documents = [];
