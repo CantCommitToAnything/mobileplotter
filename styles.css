@@ -518,6 +518,22 @@ button:disabled {
   font-weight: 600;
 }
 
+#drawingScroll {
+  height: 100%;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-x pan-y;
+}
+
+canvas {
+  display: block;
+  max-width: none;
+  background: white;
+  box-shadow: var(--shadow);
+  border-radius: 4px;
+  cursor: crosshair;
+  touch-action: auto;
+}
 /* =====================================================
    Marker Inspector
 ===================================================== */
@@ -641,6 +657,8 @@ button:disabled {
     background: white;
   }
 }
+
+
 
 /*
   Dev note:
