@@ -1,10 +1,27 @@
+/* =====================================================
+   Quick Plotter Mobile V1 Styles
+
+   Dev note:
+   This stylesheet is intentionally mobile-first.
+   The desktop MR tool should remain separate.
+   Compatibility styles are kept only while legacy app.js
+   lookups are still being refactored.
+===================================================== */
+
 :root {
-  --dark: #111827;
-  --primary: #2563eb;
-  --danger: #dc2626;
-  --border: #d1d5db;
-  --muted: #6b7280;
-  --bg: #e5e7eb;
+  --bg: #f4f6f8;
+  --panel: #ffffff;
+  --border: #d9dee5;
+  --text: #17202a;
+  --muted: #64748b;
+  --primary: #1f6feb;
+  --danger: #c0392b;
+  --save-bg: #ecfdf5;
+  --save-border: #86efac;
+  --save-text: #166534;
+  --shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+  --radius: 10px;
+  --mobile-toolbar-height: 64px;
 }
 
 * {
@@ -13,335 +30,630 @@
 
 html,
 body {
-  margin: 0;
+  width: 100%;
   height: 100%;
-  font-family: Arial, sans-serif;
-  color: #111827;
+  margin: 0;
+  overflow: hidden;
   background: var(--bg);
+  color: var(--text);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+#app {
+  height: 100dvh;
+  max-height: 100dvh;
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
   overflow: hidden;
 }
 
-button,
-select,
-input,
-textarea {
-  font: inherit;
-}
+/* =====================================================
+   Header
+===================================================== */
 
-button,
-.upload-btn,
-.load-json {
-  border: 0;
-  border-radius: 10px;
-  padding: 10px 12px;
-  background: #f3f4f6;
-  font-weight: 700;
-  cursor: pointer;
-  text-align: center;
-}
-
-.app-header {
-  height: 64px;
-  background: var(--dark);
+#appHeader {
+  padding: 10px 12px 8px;
+  background: #111827;
   color: white;
-  padding: 10px 12px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
 }
 
-.app-header h1 {
+#appHeader h1 {
   margin: 0;
   font-size: 18px;
+  line-height: 1.2;
 }
 
-.app-header p {
-  margin: 2px 0 0;
-  font-size: 12px;
+#appHeader p {
+  margin: 3px 0 0;
+  font-size: 11px;
   color: #cbd5e1;
-  max-width: 230px;
+}
+
+/* =====================================================
+   Upload / Project Topbar
+===================================================== */
+
+#topbar {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+  padding: 10px 12px;
+  background: white;
+  border-bottom: 1px solid var(--border);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.field label {
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  height: 36px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: white;
+  padding: 8px 10px;
+  font-size: 14px;
+  outline: none;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  border-color: var(--primary);
+}
+
+.field-error {
+  min-height: 13px;
+  font-size: 11px;
+  color: var(--danger);
+  line-height: 1.2;
+}
+
+.file-status {
+  min-height: 13px;
+  font-size: 11px;
+  color: #475569;
+  line-height: 1.2;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.app-header button {
+/* =====================================================
+   Workspace / Canvas
+===================================================== */
+
+#workspace {
+  position: relative;
+  min-height: 0;
+  overflow: hidden;
+}
+
+#drawingArea {
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+#drawingScroll {
+  height: 100%;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-x pan-y pinch-zoom;
+}
+
+#drawingViewport {
+  min-width: 100%;
+  min-height: 100%;
+  padding: 16px;
+  padding-bottom: calc(var(--mobile-toolbar-height) + env(safe-area-inset-bottom) + 24px);
+}
+
+#canvasWrap {
+  position: relative;
+  transform-origin: top left;
+}
+
+canvas {
+  display: block;
+  max-width: none;
+  background: white;
+  box-shadow: var(--shadow);
+  border-radius: 4px;
+  cursor: crosshair;
+  touch-action: none;
+}
+
+/* =====================================================
+   Bottom Mobile Toolbar
+===================================================== */
+
+#mobileToolbar {
+  height: calc(var(--mobile-toolbar-height) + env(safe-area-inset-bottom));
+  padding-bottom: env(safe-area-inset-bottom);
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  background: white;
+  border-top: 1px solid var(--border);
+  z-index: 1000;
+}
+
+#mobileToolbar button {
+  width: 100%;
+  height: var(--mobile-toolbar-height);
+  border: none;
+  border-right: 1px solid var(--border);
+  border-radius: 0;
+  background: white;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+#mobileToolbar button:last-child {
+  border-right: none;
+}
+
+#mobileToolbar button:active {
+  background: #eef2ff;
+}
+
+/* =====================================================
+   Toolbox Panel
+===================================================== */
+
+#sidePanel {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: calc(var(--mobile-toolbar-height) + env(safe-area-inset-bottom));
+  height: min(70vh, 620px);
+  background: white;
+  border-top: 1px solid var(--border);
+  border-radius: 18px 18px 0 0;
+  box-shadow: 0 -8px 28px rgba(15, 23, 42, 0.18);
+  z-index: 1500;
+  transform: translateY(110%);
+  transition: transform 0.2s ease;
+  overflow: auto;
+  padding: 12px;
+}
+
+body.notes-open #sidePanel {
+  transform: translateY(0);
+}
+
+.side-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.side-panel-header h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.side-panel-header button {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border-radius: 999px;
+  font-size: 20px;
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px;
+  margin-bottom: 12px;
+}
+
+.section-title {
+  margin: 0 0 8px;
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #334155;
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: 80px minmax(0, 1fr);
+  gap: 7px 10px;
+  align-items: start;
+  font-size: 13px;
+}
+
+.summary-grid span {
+  color: var(--muted);
+}
+
+.summary-grid strong {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#counts {
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+#notes {
+  width: 100%;
+  min-height: 100px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px;
+  resize: vertical;
+  font-size: 14px;
+}
+
+.note-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 8px;
+  font-size: 13px;
+}
+
+.note-list-item {
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #f8fafc;
+}
+
+/* =====================================================
+   Buttons
+===================================================== */
+
+button {
+  border: 1px solid var(--border);
+  background: white;
+  border-radius: 8px;
+  padding: 8px 10px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+button:hover {
+  background: #f8fafc;
+}
+
+button.primary {
   background: var(--primary);
+  border-color: var(--primary);
   color: white;
 }
 
-.project-bar {
-  height: 58px;
-  padding: 8px;
+button.danger {
+  background: var(--danger);
+  border-color: var(--danger);
+  color: white;
+}
+
+button.save {
+  background: var(--save-bg);
+  border-color: var(--save-border);
+  color: var(--save-text);
+  font-weight: 600;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.button-row {
   display: flex;
   gap: 8px;
-  background: white;
-  border-bottom: 1px solid var(--border);
 }
 
-.project-bar input {
+.button-row button {
   flex: 1;
   min-width: 0;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 10px;
-  font-size: 16px;
 }
 
-.upload-btn {
-  background: var(--primary);
-  color: white;
-  min-width: 92px;
+.mt {
+  margin-top: 8px;
 }
 
-#progressWrap {
-  display: none;
-  padding: 6px 8px;
-  background: white;
-  border-bottom: 1px solid var(--border);
-}
-
-#progressOuter {
-  height: 10px;
-  background: #d1d5db;
+.save-status {
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 10px;
   border-radius: 999px;
+  background: #e2e8f0;
+  color: #475569;
+}
+
+.save-status.saved {
+  background: #ecfdf5;
+  color: #166534;
+}
+
+.save-status.unsaved {
+  background: #fff7ed;
+  color: #9a3412;
+}
+
+/* =====================================================
+   Loading Overlay
+===================================================== */
+
+.canvas-loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.55);
+  z-index: 900;
+}
+
+.loading-card {
+  width: min(320px, calc(100vw - 40px));
+  padding: 18px 20px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.18);
+  text-align: center;
+}
+
+#progressText {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 12px;
+}
+
+.progress-track {
+  height: 8px;
+  border-radius: 999px;
+  background: #e2e8f0;
   overflow: hidden;
 }
 
 #progressBar {
   height: 100%;
   width: 0%;
-  background: var(--primary);
-}
-
-#progressText {
-  font-size: 12px;
-  color: var(--muted);
-  margin-top: 3px;
-}
-
-.controls-bar {
-  height: 92px;
-  background: white;
-  border-bottom: 1px solid var(--border);
-  padding: 8px;
-  display: grid;
-  gap: 8px;
-}
-
-.select-row,
-.page-row {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-
-.select-row select {
-  flex: 1;
-  min-width: 0;
-  padding: 9px;
-  border-radius: 10px;
-  border: 1px solid var(--border);
-  background: white;
-}
-
-.page-row button {
-  min-width: 72px;
-}
-
-#pageInfo {
-  flex: 1;
-  text-align: center;
-  font-size: 13px;
-  color: var(--muted);
-}
-
-/* Drawing workspace only scrolls. Toolbar stays fixed. */
-#workspace {
-  height: calc(100vh - 64px - 58px - 92px);
-  overflow: auto;
-  background: var(--bg);
-  touch-action: pan-x pan-y;
-  padding-bottom: 84px;
-}
-
-#canvasSpacer {
-  width: max-content;
-  height: max-content;
-}
-
-#canvasWrap {
-  width: max-content;
-  height: max-content;
-  transform-origin: top left;
-  display: inline-block;
-}
-
-canvas {
-  display: block;
-  background: white;
-}
-
-/* Fixed bottom toolbar */
-.bottom-bar {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 72px;
-  background: white;
-  border-top: 1px solid var(--border);
-  padding: 8px;
-  display: flex;
-  gap: 8px;
-  overflow-x: auto;
-  z-index: 30;
-}
-
-.bottom-bar button {
-  min-width: 76px;
-  flex: 0 0 auto;
-}
-
-.bottom-bar button.active {
-  background: var(--primary);
-  color: white;
-}
-
-#deleteBtn {
-  color: var(--danger);
-}
-
-/* Floating zoom controls */
-.zoom-float {
-  position: fixed;
-  right: 10px;
-  bottom: 82px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  background: rgba(255,255,255,.94);
-  border: 1px solid var(--border);
   border-radius: 999px;
-  padding: 6px;
-  z-index: 31;
-  box-shadow: 0 4px 12px rgba(0,0,0,.15);
+  background: var(--primary);
+  transition: width 0.2s ease;
 }
 
-.zoom-float button {
-  width: 36px;
-  height: 36px;
-  padding: 0;
-  border-radius: 999px;
-  background: #111827;
-  color: white;
-}
+/* =====================================================
+   Device Picker Modal
+===================================================== */
 
-#zoomLabel {
-  min-width: 48px;
-  text-align: center;
-  font-weight: 700;
-  font-size: 13px;
-}
-
-.panel {
+.modal-backdrop {
   position: fixed;
-  left: 0;
-  right: 0;
-  bottom: -82vh;
-  height: 82vh;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.modal-card {
+  width: 100%;
+  max-height: 82vh;
   background: white;
   border-radius: 18px 18px 0 0;
-  box-shadow: 0 -8px 28px rgba(0, 0, 0, .22);
-  padding: 14px;
-  transition: bottom .22s ease;
-  z-index: 40;
-  overflow: auto;
+  box-shadow: 0 -12px 40px rgba(15, 23, 42, 0.25);
+  border: 1px solid var(--border);
+  overflow: hidden;
 }
 
-.panel.open {
-  bottom: 0;
-}
-
-.panel-header {
+.modal-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
 }
 
-.panel-block {
-  margin-top: 14px;
-  padding-top: 12px;
-  border-top: 1px solid #e5e7eb;
+.modal-header h2 {
+  margin: 0;
+  font-size: 18px;
 }
 
-.panel-block h3 {
-  margin: 0 0 8px;
-  font-size: 14px;
+.modal-close {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  font-size: 22px;
+  border-radius: 999px;
 }
 
-textarea {
+.modal-body {
+  padding: 14px;
+  overflow: auto;
+  max-height: calc(82vh - 66px);
+}
+
+#devicePickerSearch {
   width: 100%;
-  min-height: 92px;
+  height: 40px;
+  margin-bottom: 12px;
   border: 1px solid var(--border);
   border-radius: 10px;
-  padding: 10px;
-  margin-top: 8px;
-  font-size: 16px;
-}
-
-.panel select,
-.panel input[type="range"] {
-  width: 100%;
-  margin: 6px 0 10px;
-}
-
-.panel label {
-  display: block;
-  font-size: 12px;
-  color: var(--muted);
-}
-
-#counts,
-#selectedInfo {
+  padding: 8px 10px;
   font-size: 14px;
-  line-height: 1.5;
-  background: #f9fafb;
-  border: 1px solid #e5e7eb;
-  border-radius: 10px;
-  padding: 10px;
 }
 
-.panel-block button,
-.load-json {
+.device-picker-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.quick-device {
+  min-height: 44px;
+  text-align: center;
+  font-weight: 600;
+}
+
+/* =====================================================
+   Marker Inspector
+===================================================== */
+
+.marker-inspector {
+  position: fixed;
+  left: 12px !important;
+  right: 12px;
+  bottom: calc(var(--mobile-toolbar-height) + env(safe-area-inset-bottom) + 12px);
+  width: auto;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.2);
+  z-index: 2200;
+  overflow: hidden;
+}
+
+.inspector-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 11px 12px;
+  border-bottom: 1px solid var(--border);
+  background: #f8fafc;
+}
+
+.inspector-header strong {
+  font-size: 14px;
+}
+
+.inspector-header button {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  font-size: 20px;
+  border-radius: 999px;
+}
+
+.inspector-body {
+  padding: 12px;
+}
+
+.inspector-body label {
   display: block;
-  width: 100%;
-  margin-top: 8px;
-  background: var(--dark);
-  color: white;
+  margin-bottom: 6px;
+  font-size: 11px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
 }
 
-@media (min-width: 900px) {
-  body {
+.inspector-body input,
+.inspector-body textarea {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 9px 10px;
+  font-size: 14px;
+}
+
+.inspector-body input {
+  height: 38px;
+  margin-bottom: 10px;
+}
+
+.inspector-body textarea {
+  min-height: 90px;
+  resize: vertical;
+}
+
+.inspector-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 12px;
+  border-top: 1px solid var(--border);
+  background: #f8fafc;
+}
+
+.inspector-actions button {
+  flex: 1;
+}
+
+.inspector-save-status {
+  font-size: 12px;
+  color: #15803d;
+  padding-top: 6px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.inspector-save-status.visible {
+  opacity: 1;
+}
+
+/* =====================================================
+   Utilities
+===================================================== */
+
+.hidden {
+  display: none !important;
+}
+
+.project-name-required {
+  border: 2px solid #dc2626 !important;
+  background: #fff5f5;
+}
+
+/*
+  Dev note:
+  This keeps the app phone-sized when previewed on desktop.
+  Remove or adjust this if you want the mobile tool to stretch wider.
+*/
+@media (min-width: 760px) {
+  #app {
     max-width: 540px;
     margin: 0 auto;
     border-left: 1px solid var(--border);
     border-right: 1px solid var(--border);
+    background: white;
   }
+}
 
-  .bottom-bar {
-    max-width: 540px;
-    left: 50%;
-    transform: translateX(-50%);
-  }
-
-  .zoom-float {
-    right: calc((100vw - 540px) / 2 + 10px);
-  }
-
-  .panel {
-    max-width: 540px;
-    left: 50%;
-    transform: translateX(-50%);
-  }
+/*
+  Dev note:
+  Hidden compatibility block for legacy app.js element lookups.
+  Remove once the JS is fully refactored and no longer needs those IDs.
+*/
+.compat-only {
+  position: absolute !important;
+  left: -99999px !important;
+  top: -99999px !important;
+  width: 1px !important;
+  height: 1px !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
 }
