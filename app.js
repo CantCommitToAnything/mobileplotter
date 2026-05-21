@@ -336,6 +336,8 @@ const saveInspectorBtn = document.getElementById("saveInspectorBtn");
 const deleteInspectorBtn = document.getElementById("deleteInspectorBtn");
 const pageNotesInput = document.getElementById("notes");
 const savePageNotesBtn = document.getElementById("savePageNotesBtn");
+const mobileZoomOutBtn = document.getElementById("mobileZoomOutBtn");
+const mobileZoomInBtn = document.getElementById("mobileZoomInBtn");
 
 // =====================================================
 // Section 2: Init, Event Binding, Status, Validation
@@ -487,6 +489,19 @@ if (drawingScroll && canvasWrap) {
 
   drawingScroll.addEventListener("touchend", () => {
     lastTouchDistance = null;
+  });
+}
+  if (mobileZoomOutBtn) {
+  mobileZoomOutBtn.addEventListener("click", () => {
+    mobileScale = Math.max(0.5, mobileScale - 0.25);
+    applyMobileZoom();
+  });
+}
+
+if (mobileZoomInBtn) {
+  mobileZoomInBtn.addEventListener("click", () => {
+    mobileScale = Math.min(4, mobileScale + 0.25);
+    applyMobileZoom();
   });
 }
 }
