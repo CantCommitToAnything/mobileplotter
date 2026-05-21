@@ -1218,20 +1218,18 @@ function drawMobileMarker(marker) {
 }
 
 function applyMobileZoom() {
-  const drawingScroll = document.getElementById("drawingScroll");
+  const canvasWrap = document.getElementById("canvasWrap");
 
-  if (!drawingScroll || !canvas || !canvas.width || !canvas.height) return;
+  if (!canvasWrap || !canvas || !canvas.width || !canvas.height) return;
 
-  canvas.style.width = `${canvas.width * mobileScale}px`;
-  canvas.style.height = `${canvas.height * mobileScale}px`;
+  canvas.style.width = `${canvas.width}px`;
+  canvas.style.height = `${canvas.height}px`;
 
-  requestAnimationFrame(() => {
-    drawingScroll.scrollLeft =
-      (canvas.offsetWidth - drawingScroll.clientWidth) / 2;
+  canvasWrap.style.width = `${canvas.width * mobileScale}px`;
+  canvasWrap.style.height = `${canvas.height * mobileScale}px`;
 
-    drawingScroll.scrollTop =
-      (canvas.offsetHeight - drawingScroll.clientHeight) / 2;
-  });
+  canvasWrap.style.transform = `scale(${mobileScale})`;
+  canvasWrap.style.transformOrigin = "top left";
 
   setStatus(`Zoom: ${Math.round(mobileScale * 100)}%`);
 }
