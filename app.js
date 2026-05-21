@@ -1149,6 +1149,7 @@ function redrawCurrentPage() {
   });
 
   updateMobileToolbox();
+  applyMobileZoom();
 }
 
 function drawMobileMarker(marker) {
@@ -1175,6 +1176,16 @@ function drawMobileMarker(marker) {
   }
 }
 
+function applyMobileZoom() {
+  const page = getCurrentPage();
+
+  if (!page?.image || !canvas) return;
+
+  canvas.style.width = `${canvas.width * mobileScale}px`;
+  canvas.style.height = `${canvas.height * mobileScale}px`;
+
+  setStatus(`Zoom: ${Math.round(mobileScale * 100)}%`);
+}
 function goToPreviousPage() {
   const currentDoc = documents[currentDocIndex];
 
